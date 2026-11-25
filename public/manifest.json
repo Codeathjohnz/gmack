@@ -1,0 +1,25 @@
+{
+    "name": "Gmack — Point of Sale for Construction Supply",
+    "short_name": "Gmack",
+    "description": "Multi-business Point of Sale platform for hardware & construction supply, with a built-in sales analytics dashboard.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#ffffff",
+    "theme_color": "#ff6b00",
+    "icons": [
+        {
+            "src": "/assets/images/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/assets/images/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}

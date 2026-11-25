@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIR Sales Report - Gmack</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #fff; color: #1c2126; }
+
+        @media screen {
+            .print-controls {
+                position: fixed; top: 0; left: 0; right: 0;
+                background: #1c2126; color: white;
+                padding: 12px 24px;
+                display: flex; align-items: center; gap: 15px;
+                z-index: 1000;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            }
+            .print-controls button {
+                padding: 8px 20px; border: none; border-radius: 5px;
+                cursor: pointer; font-size: 14px; font-weight: 600;
+            }
+            .btn-print { background: #ff6b00; color: white; }
+            .btn-print:hover { background: #d95700; }
+            .btn-back { background: #6c757d; color: white; }
+            .btn-back:hover { background: #5a6268; }
+            .report-wrap { margin-top: 60px; padding: 24px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        }
+
+        @media print {
+            .print-controls { display: none; }
+        }
+
+        .report-header { text-align: center; margin-bottom: 24px; border-bottom: 3px solid #ff6b00; padding-bottom: 16px; }
+        .report-header h1 { font-size: 22px; margin-bottom: 4px; }
+        .report-header p { color: #5b6672; font-size: 13px; }
+
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+        .summary-box { flex: 1; min-width: 140px; border: 1px solid #cbd2d9; border-radius: 8px; padding: 12px; text-align: center; }
+        .summary-box .label { font-size: 11px; text-transform: uppercase; color: #5b6672; letter-spacing: 0.4px; }
+        .summary-box .value { font-size: 18px; font-weight: 800; margin-top: 4px; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { border: 1px solid #cbd2d9; padding: 6px 8px; text-align: left; }
+        th { background: #f4f5f7; text-transform: uppercase; font-size: 10px; letter-spacing: 0.3px; }
+        tfoot td { font-weight: 800; background: #f4f5f7; }
+
+        .report-footer { margin-top: 20px; font-size: 11px; color: #5b6672; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="print-controls">
+        <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+        <button class="btn-back" onclick="window.close()">Close</button>
+    </div>
+
+    <div class="report-wrap">
+        <div class="report-header">
+            <h1><?= esc($business['name'] ?? 'Gmack') ?> — BIR Sales Report</h1>
+            <p><?= esc(date('M j, Y', strtotime($date_from))) ?> to <?= esc(date('M j, Y', strtotime($date_to))) ?> · Generated <?= date('M j, Y g:ia') ?></p>
+        </div>
+
+        <div class="summary-row">
+            <div class="summary-box">
+                <div class="label">Transactions</div>
+                <div class="value"><?= count($sales) ?></div>
+            </div>
+            <div class="summary-box">
+                <div class="label">Total Net Sales</div>
+                <div class="value">₱<?= number_format($total_net, 2) ?></div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Reference No.</th>
+                    <th>Date &amp; Time</th>
+                    <th>Cashier</th>
+                    <th>Items</th>
+                    <th>Payment</th>
+                    <th>Net Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($sales)): ?>
+                    <tr><td colspan="6" style="text-align:center;">No transactions in this period.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($sales as $sale): ?>
+                        <tr>
+                            <td><?= esc($sale['reference_no']) ?></td>
+                            <td><?= esc(date('M j, Y g:ia', strtotime($sale['created_at']))) ?></td>
+                            <td><?= esc($sale['cashier_name']) ?></td>
+                            <td><?= (int) $sale['item_count'] ?></td>
+                            <td><?= esc(ucfirst($sale['payment_method'])) ?></td>
+                            <td>₱<?= number_format($sale['net_amount'], 2) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+            <?php if (!empty($sales)): ?>
+            <tfoot>
+                <tr>
+                    <td colspan="5">Total</td>
+                    <td>₱<?= number_format($total_net, 2) ?></td>
+                </tr>
+            </tfoot>
+            <?php endif; ?>
+        </table>
+
+        <p class="report-footer">Generated by Gmack — Point of Sale for Construction Supply.</p>
+    </div>
+</body>
+</html>
