@@ -617,5 +617,6 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
     group.appendChild(btn);
 });
 </script>
+<?= view('components/url_mask') ?>
 </body>
 </html>

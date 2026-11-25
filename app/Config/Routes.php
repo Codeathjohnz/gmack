@@ -9,6 +9,9 @@ use CodeIgniter\Router\RouteCollection;
 // Landing Page
 $routes->get('/', 'Home::index');
 
+// Masked addresses (address bar shows /v/<random code>)
+$routes->get('v/(:segment)', 'Home::masked/$1');
+
 // Auth Routes
 $routes->get('auth', 'Auth::index');
 $routes->get('auth', 'Auth::index');
